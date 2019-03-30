@@ -1,15 +1,18 @@
 #!/bin/sh -x
+if [ -z "$1" ]
+  then
+    echo "No argument supplied"
+fi
+SCENARIO=$1
 
 set -e
 
 id
 
-SAVES=/factorio/saves
-CONFIG=/factorio/config
-
 mkdir -p $SAVES
-mkdir -p /factorio/mods
 mkdir -p $CONFIG
+mkdir -p $MODS
+mkdir -p $SCENARIOS
 
 #chown -R factorio /factorio
 
@@ -29,16 +32,10 @@ if [ ! -f $CONFIG/map-settings.json ]; then
   cp /opt/factorio/data/map-settings.example.json $CONFIG/map-settings.json
 fi
 
-if ! find -L $SAVES -iname \*.zip -mindepth 1 -print | grep -q .; then
-  /opt/factorio/bin/x64/factorio \
-    --create $SAVES/_autosave1.zip  \
-    --map-gen-settings $CONFIG/map-gen-settings.json \
-    --map-settings $CONFIG/map-settings.json
-fi
 
 exec /opt/factorio/bin/x64/factorio \
   --port $PORT \
-  --start-server-load-latest \
+  --start-server-load-scenario $SCENARIO \
   --server-settings $CONFIG/server-settings.json \
   --server-whitelist $CONFIG/server-whitelist.json \
   --server-banlist $CONFIG/server-banlist.json \

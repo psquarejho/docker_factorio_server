@@ -1,6 +1,6 @@
-FROM frolvlad/alpine-glibc:alpine-3.7
+FROM frolvlad/alpine-glibc:alpine-3.9
 
-MAINTAINER https://github.com/psquarejho/docker_factorio_server
+MAINTAINER https://github.com/dtandersen/docker_factorio_server
 
 ARG USER=factorio
 ARG GROUP=factorio
@@ -9,8 +9,8 @@ ARG PGID=845
 
 ENV PORT=34197 \
     RCON_PORT=27015 \
-    VERSION=0.16.51 \
-    SHA1=127e7ff484ab263b13615d6114013ce0a66ac929 \
+    VERSION=0.17.23 \
+    SHA1=69eb89ecdfb8a1dc0b51415870200368950a677a \
     SAVES=/factorio/saves \
     CONFIG=/factorio/config \
     MODS=/factorio/mods \
@@ -18,7 +18,7 @@ ENV PORT=34197 \
     SCRIPTOUTPUT=/factorio/script-output
 
 RUN mkdir -p /opt /factorio && \
-    apk add --update --no-cache pwgen && \
+    apk add --update --no-cache pwgen su-exec binutils gettext libintl && \
     apk add --update --no-cache --virtual .build-deps curl && \
     curl -sSL https://www.factorio.com/get-download/$VERSION/headless/linux64 \
         -o /tmp/factorio_headless_x64_$VERSION.tar.xz && \
@@ -40,7 +40,5 @@ VOLUME /factorio
 EXPOSE $PORT/udp $RCON_PORT/tcp
 
 COPY files/ /
-
-USER $USER
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
