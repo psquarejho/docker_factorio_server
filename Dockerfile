@@ -6,11 +6,10 @@ ARG USER=factorio
 ARG GROUP=factorio
 ARG PUID=845
 ARG PGID=845
+ARG FACTORIO_VERSION
 
 ENV PORT=34197 \
     RCON_PORT=27015 \
-    VERSION=0.17.37 \
-    SHA1=4af991cb42145854a4803203f31d42f81fea7034 \
     SAVES=/factorio/saves \
     CONFIG=/factorio/config \
     MODS=/factorio/mods \
@@ -20,12 +19,11 @@ ENV PORT=34197 \
 RUN mkdir -p /opt /factorio && \
     apk add --update --no-cache pwgen su-exec binutils gettext libintl && \
     apk add --update --no-cache --virtual .build-deps curl && \
-    curl -sSL https://www.factorio.com/get-download/$VERSION/headless/linux64 \
-        -o /tmp/factorio_headless_x64_$VERSION.tar.xz && \
-    echo "$SHA1  /tmp/factorio_headless_x64_$VERSION.tar.xz" | sha1sum -c && \
-    tar xf /tmp/factorio_headless_x64_$VERSION.tar.xz --directory /opt && \
+    curl -sSL https://www.factorio.com/get-download/$FACTORIO_VERSION/headless/linux64 \
+        -o /tmp/factorio_headless_x64_$FACTORIO_VERSION.tar.xz && \
+    tar xf /tmp/factorio_headless_x64_$FACTORIO_VERSION.tar.xz --directory /opt && \
     chmod ugo=rwx /opt/factorio && \
-    rm /tmp/factorio_headless_x64_$VERSION.tar.xz && \
+    rm /tmp/factorio_headless_x64_$FACTORIO_VERSION.tar.xz && \
     ln -s $SAVES /opt/factorio/saves && \
     ln -s $MODS /opt/factorio/mods && \
     ln -s $SCENARIOS /opt/factorio/scenarios && \
